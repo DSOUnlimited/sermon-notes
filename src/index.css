@@ -44,3 +44,13 @@ ol.list-lower-roman {
 .prose li {
   @apply mb-2;
 }
+
+.tox-toolbar__primary {
+  flex-wrap: wrap !important;
+}
+@media (max-width: 600px) {
+  .tox-toolbar__primary {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

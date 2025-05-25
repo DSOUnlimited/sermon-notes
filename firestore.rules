@@ -1,0 +1,8 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /sermons/{sermonId} {
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update, delete, read: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+  }
+}

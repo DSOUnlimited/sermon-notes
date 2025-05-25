@@ -344,7 +344,7 @@ const SermonEditorTest: React.FC = () => {
           </div>
           <div className="mb-3">
             <label className="form-label fs-5">Notes</label>
-            <div className="border rounded bg-white">
+            <div className="border rounded bg-white editor-container w-full max-w-full">
               <Editor
                 apiKey="dl0pifrwkq8bux7u2niz7gzyvioedfl1by2jhtacmuttvq1b"
                 value={sermonData.notes}
@@ -366,7 +366,10 @@ const SermonEditorTest: React.FC = () => {
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" +
-                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Ubuntu:wght@400;700&family=Caveat:wght@400;700&family=Bangers&display=swap');",
+                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato=Lato,wght@400;700&family=Poppins:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Ubuntu:wght@400;700&family=Caveat:wght@400;700&family=Bangers&display=swap');",
+                  mobile: {
+                    theme: 'mobile'
+                  },
                   setup: (editor: any) => {
                     editor.on('keydown', async (e: KeyboardEvent) => {
                       if (e.key === ' ') {
