@@ -366,58 +366,7 @@ const SermonEditorTest: React.FC = () => {
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" +
-                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato=Lato,wght@400;700&family=Poppins:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Ubuntu:wght@400;700&family=Caveat:wght@400;700&family=Bangers&display=swap');",
-                  mobile: {
-                    theme: 'mobile'
-                  },
-                  setup: (editor: any) => {
-                    editor.on('keydown', async (e: KeyboardEvent) => {
-                      if (e.key === ' ') {
-                        const rng = editor.selection.getRng();
-                        const node = rng.startContainer;
-                        let textBefore = '';
-                        if (node.nodeType === 3) { // Text node
-                          textBefore = node.textContent?.substring(0, rng.startOffset) || '';
-                        } else if (node.nodeType === 1 && rng.startOffset > 0) { // Element node
-                          const child = node.childNodes[rng.startOffset - 1];
-                          if (child && child.nodeType === 3) {
-                            textBefore = child.textContent || '';
-                          }
-                        }
-                        // Find the last scripture reference before the cursor
-                        const matches = [...textBefore.matchAll(SCRIPTURE_REGEX)];
-                        if (matches.length > 0) {
-                          const lastMatch = matches[matches.length - 1];
-                          const ref = lastMatch[0];
-                          const expandedRef = expandBookAbbreviation(ref);
-                          editor.setProgressState(true);
-                          const verse = await fetchVerse(expandedRef);
-                          editor.setProgressState(false);
-                          if (verse) {
-                            if (node.nodeType === 3) {
-                              // Use match index for precise replacement
-                              const matchIndex = lastMatch.index ?? 0;
-                              // Insert reference and colon as plain text, verse as styled span
-                              const refText = `${expandedRef}: `;
-                              const verseHtml = `<span style="font-weight:bold;font-style:italic;font-size:90%;">${verse}</span> `;
-                              // Create a range for the matched reference
-                              const range = editor.dom.createRng();
-                              range.setStart(node, matchIndex);
-                              range.setEnd(node, matchIndex + ref.length);
-                              editor.selection.setRng(range);
-                              // Replace the selection with the reference and styled verse
-                              editor.insertContent(refText + verseHtml);
-                              // Clear formatting so user can continue typing in normal style
-                              editor.execCommand('RemoveFormat');
-                              editor.save();
-                              editor.setDirty(true);
-                              setDebugInfo((prev: string) => `${prev}\nInserted styled verse for ${expandedRef} in notes (bold+italic+smaller, formatting cleared after).`);
-                            }
-                          }
-                        }
-                      }
-                    });
-                  },
+                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto=wght@400;700&family=Montserrat=wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');"
                 }}
                 onEditorChange={handleEditorChange}
                 onInit={handleEditorInit}

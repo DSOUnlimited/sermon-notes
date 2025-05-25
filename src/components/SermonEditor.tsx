@@ -337,10 +337,7 @@ const SermonEditor: React.FC = () => {
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" +
-                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Ubuntu:wght@400;700&family=Caveat:wght@400;700&family=Bangers&display=swap');",
-                  mobile: {
-                    theme: 'mobile'
-                  }
+                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');"
                 }}
                 onEditorChange={handleEditorChange}
               />
