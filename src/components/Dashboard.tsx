@@ -118,7 +118,21 @@ const Dashboard: React.FC = () => {
     docPdf.setFontSize(12);
     docPdf.text('Notes:', 10, 58);
     docPdf.setFontSize(11);
-    docPdf.text((data.notes || '').replace(/<[^>]+>/g, ''), 10, 66, { maxWidth: 190 });
+    // Remove HTML tags from notes
+    const notesText = (data.notes || '').replace(/<[^>]+>/g, '');
+    const pageHeight = docPdf.internal.pageSize.getHeight();
+    const margin = 10;
+    let y = 66;
+    const lineHeight = 7;
+    const lines = docPdf.splitTextToSize(notesText, 190);
+    lines.forEach((line: string) => {
+      if (y + lineHeight > pageHeight - margin) {
+        docPdf.addPage();
+        y = margin + 10;
+      }
+      docPdf.text(line, 10, y);
+      y += lineHeight;
+    });
     docPdf.save(`${data.title || 'sermon'}.pdf`);
   };
 
@@ -152,15 +166,15 @@ const Dashboard: React.FC = () => {
   const deletedSermons = sermons.filter(s => s.deleted);
 
   return (
-    <div className="container py-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="display-5 mb-0">Your Sermons</h1>
-        <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
+    <div className="container py-3 px-1 px-sm-3">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-2">
+        <h1 className="display-6 mb-0 text-center w-100 w-sm-auto">Your Sermons</h1>
+        <button className="btn btn-outline-danger w-100 w-sm-auto" onClick={handleLogout}>Logout</button>
       </div>
-      <div className="d-flex gap-2 mb-4">
-        <button className="btn btn-primary" onClick={handleNewSermon}>+ New Sermon</button>
+      <div className="d-flex flex-column flex-sm-row gap-2 mb-4">
+        <button className="btn btn-primary w-100 w-sm-auto" onClick={handleNewSermon}>+ New Sermon</button>
         {import.meta.env.DEV && (
-          <button className="btn btn-warning" onClick={handleTestEnvironment}>
+          <button className="btn btn-warning w-100 w-sm-auto" onClick={handleTestEnvironment}>
             Test Environment
           </button>
         )}
@@ -176,22 +190,22 @@ const Dashboard: React.FC = () => {
           {activeSermons.map(sermon => (
             <div key={sermon.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div
-                className="card h-100 shadow-sm sermon-tile"
+                className="card h-100 shadow-sm sermon-tile p-2 p-sm-3"
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleEditSermon(sermon.id)}
               >
-                <div className="card-body d-flex flex-column justify-content-between">
+                <div className="card-body d-flex flex-column justify-content-between p-2 p-sm-3">
                   <div>
-                    <h5 className="card-title mb-2">{sermon.title}</h5>
-                    <div className="card-subtitle mb-2 text-muted small">{sermon.date} &mdash; {sermon.preacher}</div>
+                    <h5 className="card-title mb-2 text-break">{sermon.title}</h5>
+                    <div className="card-subtitle mb-2 text-muted small text-break">{sermon.date} &mdash; {sermon.preacher}</div>
                   </div>
-                  <div className="mt-2 text-truncate" style={{ fontSize: '0.95em', color: '#555' }}>
+                  <div className="mt-2 text-truncate text-break" style={{ fontSize: '0.95em', color: '#555' }}>
                     {sermon.scripture}
                   </div>
-                  <div className="mt-3 d-flex gap-2">
-                    <button className="btn btn-outline-secondary btn-sm" onClick={e => { e.stopPropagation(); handlePrint(sermon.id); }}>Print</button>
-                    <button className="btn btn-outline-secondary btn-sm" onClick={e => { e.stopPropagation(); handleDownloadPDF(sermon.id); }}>Download PDF</button>
-                    <button className="btn btn-outline-danger btn-sm" onClick={e => { e.stopPropagation(); handleDelete(sermon.id); }}>Delete</button>
+                  <div className="mt-3 d-flex flex-column flex-sm-row gap-2">
+                    <button className="btn btn-outline-secondary btn-sm w-100 w-sm-auto" onClick={e => { e.stopPropagation(); handlePrint(sermon.id); }}>Print</button>
+                    <button className="btn btn-outline-secondary btn-sm w-100 w-sm-auto" onClick={e => { e.stopPropagation(); handleDownloadPDF(sermon.id); }}>Download PDF</button>
+                    <button className="btn btn-outline-danger btn-sm w-100 w-sm-auto" onClick={e => { e.stopPropagation(); handleDelete(sermon.id); }}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -210,17 +224,17 @@ const Dashboard: React.FC = () => {
           <div className="row g-3">
             {deletedSermons.map(sermon => (
               <div key={sermon.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div className="card h-100 shadow-sm bg-light">
-                  <div className="card-body d-flex flex-column justify-content-between">
+                <div className="card h-100 shadow-sm bg-light p-2 p-sm-3">
+                  <div className="card-body d-flex flex-column justify-content-between p-2 p-sm-3">
                     <div>
-                      <h5 className="card-title mb-2">{sermon.title}</h5>
-                      <div className="card-subtitle mb-2 text-muted small">{sermon.date} &mdash; {sermon.preacher}</div>
+                      <h5 className="card-title mb-2 text-break">{sermon.title}</h5>
+                      <div className="card-subtitle mb-2 text-muted small text-break">{sermon.date} &mdash; {sermon.preacher}</div>
                     </div>
-                    <div className="mt-2 text-truncate" style={{ fontSize: '0.95em', color: '#555' }}>
+                    <div className="mt-2 text-truncate text-break" style={{ fontSize: '0.95em', color: '#555' }}>
                       {sermon.scripture}
                     </div>
-                    <div className="mt-3 d-flex gap-2">
-                      <button className="btn btn-outline-success btn-sm" onClick={e => { e.stopPropagation(); handleRecover(sermon.id); }}>Recover</button>
+                    <div className="mt-3 d-flex flex-column flex-sm-row gap-2">
+                      <button className="btn btn-outline-success btn-sm w-100 w-sm-auto" onClick={e => { e.stopPropagation(); handleRecover(sermon.id); }}>Recover</button>
                     </div>
                   </div>
                 </div>
