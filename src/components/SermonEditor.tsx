@@ -215,6 +215,9 @@ const SermonEditor: React.FC = () => {
     }
   };
 
+  // Detect mobile device
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 600;
+
   if (initializing) {
     return <div className="container py-5 text-center">Loading sermon...</div>;
   }
@@ -322,22 +325,26 @@ const SermonEditor: React.FC = () => {
                 init={{
                   height: 400,
                   menubar: false,
-                  plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
-                    'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount',
-                    'fontsize'
-                  ],
-                  toolbar: [
-                    'undo redo | styles | fontfamily fontsize | bold italic underline | forecolor',
-                    'alignleft aligncenter alignright | bullist numlist | removeformat'
-                  ].join(' | '),
+                  plugins: isMobile
+                    ? ['lists']
+                    : [
+                        'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+                        'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'help', 'wordcount',
+                        'fontsize'
+                      ],
+                  toolbar: isMobile
+                    ? 'bullist numlist'
+                    : [
+                        'undo redo | styles | fontfamily fontsize | bold italic underline | forecolor',
+                        'alignleft aligncenter alignright | bullist numlist | removeformat'
+                      ].join(' | '),
                   font_family_formats:
                     'Playfair Display=Playfair Display,serif;Roboto=Roboto,sans-serif;Montserrat=Montserrat,sans-serif;Lato=Lato,sans-serif;Poppins=Poppins,sans-serif;Merriweather=Merriweather,serif;Source Sans Pro=Source Sans Pro,sans-serif;Open Sans=Open Sans,sans-serif;PT Serif=PT Serif,serif;Ubuntu=Ubuntu,sans-serif;Caveat=Caveat,cursive;Bangers=Bangers,cursive;',
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" +
-                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');"
+                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat=wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');"
                 }}
                 onEditorChange={handleEditorChange}
               />

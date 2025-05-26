@@ -131,6 +131,9 @@ const SermonEditorTest: React.FC = () => {
     contentHistory: []
   });
 
+  // Detect mobile device
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 600;
+
   const fetchVerse = async (reference: string) => {
     try {
       setDebugInfo((prev: string) => `${prev}\nFetching verse for: ${reference}`);
@@ -351,16 +354,20 @@ const SermonEditorTest: React.FC = () => {
                 init={{
                   height: 400,
                   menubar: false,
-                  plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
-                    'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount',
-                    'fontsize'
-                  ],
-                  toolbar: [
-                    'undo redo | fontfamily fontsize | bold italic underline | forecolor',
-                    'alignleft aligncenter alignright | bullist numlist | removeformat'
-                  ].join(' | '),
+                  plugins: isMobile
+                    ? ['lists']
+                    : [
+                        'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+                        'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'help', 'wordcount',
+                        'fontsize'
+                      ],
+                  toolbar: isMobile
+                    ? 'bullist numlist'
+                    : [
+                        'undo redo | fontfamily fontsize | bold italic underline | forecolor',
+                        'alignleft aligncenter alignright | bullist numlist | removeformat'
+                      ].join(' | '),
                   font_family_formats:
                     'Playfair Display=Playfair Display,serif;Roboto=Roboto,sans-serif;Montserrat=Montserrat,sans-serif;Lato=Lato,sans-serif;Poppins=Poppins,sans-serif;Merriweather=Merriweather,serif;Source Sans Pro=Source Sans Pro,sans-serif;Open Sans=Open Sans,sans-serif;PT Serif=PT Serif,serif;Ubuntu=Ubuntu,sans-serif;Caveat=Caveat,cursive;Bangers=Bangers,cursive;',
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
