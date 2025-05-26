@@ -344,7 +344,48 @@ const SermonEditor: React.FC = () => {
                   fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" +
-                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Montserrat=wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');"
+                    "@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto=wght@400;700&family=Montserrat=wght@400;700&family=Lato=wght@400;700&family=Poppins=wght@400;700&family=Merriweather=wght@400;700&family=Source+Sans+Pro=wght@400;700&family=Open+Sans=wght@400;700&family=PT+Serif=wght@400;700&family=Ubuntu=wght@400;700&family=Caveat=wght@400;700&family=Bangers&display=swap');",
+                  setup: (editor: any) => {
+                    editor.on('keydown', async (e: KeyboardEvent) => {
+                      if (e.key === ' ') {
+                        const rng = editor.selection.getRng();
+                        const node = rng.startContainer;
+                        let textBefore = '';
+                        if (node.nodeType === 3) {
+                          textBefore = node.textContent?.substring(0, rng.startOffset) || '';
+                        } else if (node.nodeType === 1 && rng.startOffset > 0) {
+                          const child = node.childNodes[rng.startOffset - 1];
+                          if (child && child.nodeType === 3) {
+                            textBefore = child.textContent || '';
+                          }
+                        }
+                        const matches = [...textBefore.matchAll(SCRIPTURE_REGEX)];
+                        if (matches.length > 0) {
+                          const lastMatch = matches[matches.length - 1];
+                          const ref = lastMatch[0];
+                          const expandedRef = expandBookAbbreviation(ref);
+                          editor.setProgressState(true);
+                          const verse = await fetchVerse(expandedRef);
+                          editor.setProgressState(false);
+                          if (verse) {
+                            if (node.nodeType === 3) {
+                              const matchIndex = lastMatch.index ?? 0;
+                              const refText = `${expandedRef}: `;
+                              const verseHtml = `<span style=\"font-weight:bold;font-style:italic;font-size:90%;\">${verse}</span> `;
+                              const range = editor.dom.createRng();
+                              range.setStart(node, matchIndex);
+                              range.setEnd(node, matchIndex + ref.length);
+                              editor.selection.setRng(range);
+                              editor.insertContent(refText + verseHtml);
+                              editor.execCommand('RemoveFormat');
+                              editor.save();
+                              editor.setDirty(true);
+                            }
+                          }
+                        }
+                      }
+                    });
+                  }
                 }}
                 onEditorChange={handleEditorChange}
               />
