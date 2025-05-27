@@ -6,6 +6,8 @@ interface ExportNotesPDFProps {
 
 const ExportNotesPDF: React.FC<ExportNotesPDFProps> = ({ notesHtmlId = "notes-content" }) => {
   const handleExport = async () => {
+    if (typeof window === "undefined") return; // Only run in browser
+
     const element = document.getElementById(notesHtmlId);
     if (!element) return;
 
