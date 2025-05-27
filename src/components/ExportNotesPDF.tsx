@@ -12,8 +12,14 @@ const ExportNotesPDF: React.FC<ExportNotesPDFProps> = ({ notesHtmlId = "notes-co
 
     // Clone the element to avoid modifying the DOM
     const clone = element.cloneNode(true) as HTMLElement;
-    // Replace all &nbsp; and &nbsp with a real space in the HTML
-    clone.innerHTML = clone.innerHTML.replace(/&nbsp;|&nbsp/gi, ' ');
+
+    // Replace all &nbsp; and Unicode non-breaking spaces with a real space
+    let html = clone.innerHTML.replace(/&nbsp;/gi, ' ').replace(/\u00A0/g, ' ');
+
+    // Decode any other HTML entities
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    clone.innerHTML = tempDiv.textContent || tempDiv.innerText || '';
 
     html2pdf()
       .set({
