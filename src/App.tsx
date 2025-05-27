@@ -1,59 +1,18 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from './firebase/config';
-import SermonEditor from './components/SermonEditor';
-import SermonEditorTest from './components/SermonEditorTest';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import React from "react";
+import ExportNotesPDF from "./components/ExportNotesPDF";
 
 function App() {
-  const [user, loading] = useAuthState(auth);
-  const isDevelopment = import.meta.env.DEV;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen d-flex align-items-center justify-content-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Routes>
-          <Route 
-            path="/" 
-            element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/login" 
-            element={!user ? <Login /> : <Navigate to="/dashboard" />} 
-          />
-          <Route 
-            path="/dashboard" 
-            element={user ? <Dashboard /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/editor" 
-            element={user ? <SermonEditor /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/editor/:id" 
-            element={user ? <SermonEditor /> : <Navigate to="/login" />} 
-          />
-          {isDevelopment && (
-            <Route 
-              path="/editor-test" 
-              element={user ? <SermonEditorTest /> : <Navigate to="/login" />} 
-            />
-          )}
-        </Routes>
+    <div>
+      <div id="notes-content">
+        <h1>Test Notes</h1>
+        <p>This is a test note. Add more content here to test multi-page export.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur consectetur, nisl nisi consectetur nisi, eu consectetur nisl nisi euismod nisi.</p>
+        <p>Page 2 content. Add more paragraphs to test multi-page PDF export.</p>
+        <p>Page 3 content. Keep adding content to ensure the PDF spans multiple pages.</p>
       </div>
-    </Router>
+      <ExportNotesPDF notesHtmlId="notes-content" />
+    </div>
   );
 }
 
