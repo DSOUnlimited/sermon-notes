@@ -9,6 +9,12 @@ const ExportNotesPDF: React.FC<ExportNotesPDFProps> = ({ notesHtmlId = "notes-co
   const handleExport = () => {
     const element = document.getElementById(notesHtmlId);
     if (!element) return;
+
+    // Clone the element to avoid modifying the DOM
+    const clone = element.cloneNode(true) as HTMLElement;
+    // Replace all &nbsp; and &nbsp with a real space in the HTML
+    clone.innerHTML = clone.innerHTML.replace(/&nbsp;|&nbsp/gi, ' ');
+
     html2pdf()
       .set({
         margin: 0.5,
@@ -17,7 +23,7 @@ const ExportNotesPDF: React.FC<ExportNotesPDFProps> = ({ notesHtmlId = "notes-co
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       })
-      .from(element)
+      .from(clone)
       .save();
   };
 
