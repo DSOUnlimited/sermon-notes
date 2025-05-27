@@ -1,14 +1,16 @@
 import React from 'react';
-import html2pdf from 'html2pdf.js';
 
 interface ExportNotesPDFProps {
   notesHtmlId?: string;
 }
 
 const ExportNotesPDF: React.FC<ExportNotesPDFProps> = ({ notesHtmlId = "notes-content" }) => {
-  const handleExport = () => {
+  const handleExport = async () => {
     const element = document.getElementById(notesHtmlId);
     if (!element) return;
+
+    // Dynamically import html2pdf.js only on the client
+    const html2pdf = (await import('html2pdf.js')).default;
 
     // Clone the element to avoid modifying the DOM
     const clone = element.cloneNode(true) as HTMLElement;
